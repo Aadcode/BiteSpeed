@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import type { contact } from "@prisma/client";
 
 const prisma = new PrismaClient()
 
@@ -97,7 +98,7 @@ const identify = async (body: { phoneNumber?: string, email?: string }) => {
             }
         });
 
-        rootPrimaryContacts.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        rootPrimaryContacts.sort((a: contact, b: contact) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
         const keepPrimary = rootPrimaryContacts[0];
         const convertToSecondary = rootPrimaryContacts.slice(1);
@@ -125,17 +126,15 @@ const identify = async (body: { phoneNumber?: string, email?: string }) => {
         rootPrimaryIds.add(keepPrimary.id);
     }
 
-    const rootPrimaryId = rootPrimaryIdsArray.length > 1 ? Array.from(rootPrimaryIds)[0] : rootPrimaryIdsArray[0];
-
-    // Check if we need to create a new secondary contact or update existing
-    const exactMatch = existingContacts.find(contact =>
+    const rootPrimaryId = rootPrimaryIdsArray.length > 1 ? Array.from(rootPrimaryIds)[0] : rootPrimaryIdsArray[0];    // Check if we need to create a new secondary contact or update existing
+    const exactMatch = existingContacts.find((contact: contact) =>
         contact.phoneNumber === phoneNumber && contact.email === email
     );
 
     if (!exactMatch) {
         // Find matches for phone and email separately
-        const phoneMatch = phoneNumber ? existingContacts.find(contact => contact.phoneNumber === phoneNumber) : null;
-        const emailMatch = email ? existingContacts.find(contact => contact.email === email) : null;
+        const phoneMatch = phoneNumber ? existingContacts.find((contact: contact) => contact.phoneNumber === phoneNumber) : null;
+        const emailMatch = email ? existingContacts.find((contact: contact) => contact.email === email) : null;
 
         // Case 1: Phone exists with no email - update it with email
         if (phoneMatch && !phoneMatch.email && email) {
@@ -216,9 +215,7 @@ const identify = async (body: { phoneNumber?: string, email?: string }) => {
 
     // Populate with unique values using Sets for better performance
     const emailSet = new Set<string>();
-    const phoneSet = new Set<string>();
-
-    allRelatedContacts.forEach((contact) => {
+    const phoneSet = new Set<string>();    allRelatedContacts.forEach((contact: contact) => {
         if (contact.email) {
             emailSet.add(contact.email);
         }
