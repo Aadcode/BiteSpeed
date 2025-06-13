@@ -215,7 +215,7 @@ const identify = async (body: { phoneNumber?: string, email?: string }) => {
 
     // Populate with unique values using Sets for better performance
     const emailSet = new Set<string>();
-    const phoneSet = new Set<string>();    allRelatedContacts.forEach((contact: contact) => {
+    const phoneSet = new Set<string>(); allRelatedContacts.forEach((contact: contact) => {
         if (contact.email) {
             emailSet.add(contact.email);
         }
